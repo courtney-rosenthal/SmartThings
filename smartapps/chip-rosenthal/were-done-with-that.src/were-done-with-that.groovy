@@ -68,46 +68,44 @@ def dynamicPrefs() {
 }
 
 def installed() {
-	log.debug "Installed with settings: ${settings}"    
+	log.debug "installed: settings = ${settings}"    
 	initialize()
 }
 
 def updated() {
-	log.debug "Updated with settings: ${settings}"
+	log.debug "updated: settings = ${settings}"
 	unsubscribe()
 	initialize()
 }
 
 def initialize() {
-	log.debug "initialize: subscribing to motion detector: ${selectedSensor.name}"
 	subscribe(selectedSensor, "motion", motionHandler)
 }
 
 def motionHandler(evt) {
-	log.debug "motionHandler: sensor ${selectedSensor.name}, value = ${evt.value}"
 	switch (evt.value) {
     case "active":
     	log.debug "motionHandler: motion detector active - canceling any scheduled timer event"
-    	unschedule("executeHandler")
+    	unschedule("timeoutHandler")
     	break
     case "inactive":
     	def secs = 60 * idleMinutes
     	log.debug "motionHandler: motion detector inactive - scheduling a timer event for ${secs} secs"
-    	runIn(secs, executeHandler)
+    	runIn(secs, timeoutHandler)
     	break
     default:
     	log.error "motionHandler: bad event, value = ${evt.value}"
     }
 }
 
-def executeHandler(evt) {
+def timeoutHandler() {
     def currentMode = location.mode
-	log.debug "executeHandler: value = ${evt.value}, currentMode = ${currentMode}, runAction = ${runAction}"
     if (enableModes.contains(currentMode)) {    
-        log.info "Idle activity detected, running: ${runAction}."
+    	log.debug "timeoutHandler: running action = ${runAction}"
         location.helloHome?.execute(runAction)
+        sendNotificationEvent("Looks like everybody left the room, so I ran: ${runAction}")
     } else {
-    	log.debug "executeHandler: ignoring event in current mode"
+    	log.debug "timeoutHandler: ignoring event in mode ${currentMode}"
     }
 }
     
