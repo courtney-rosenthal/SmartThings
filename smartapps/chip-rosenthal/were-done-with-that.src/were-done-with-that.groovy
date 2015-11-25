@@ -1,5 +1,5 @@
 /**
- *  We're Done With That
+ * We're Done With That
  *
  * By Chip Rosenthal <chip@unicom.com>
  *  
@@ -33,7 +33,7 @@ definition(
     name: "We're Done With That",
     namespace: "chip-rosenthal",
     author: "Chip Rosenthal",
-    description: "I use this to change mode from \"Watching TV\" to \"Home\" when everybody has left the room.",
+    description: "Use this app if you have a mode like \"Watching TV\" and you want to change it automatically when everybody leaves the room",
     category: "Mode Magic",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
@@ -50,8 +50,7 @@ def dynamicPrefs() {
     	// build sorted list of available actions
         def actions = location.helloHome?.getPhrases()*.label.sort()
         if (! actions) {
-            log.error "Failed to retrieve available actions."
-            return
+            log.error "dynamicPrefs: failed to retrieve available actions"
         }
         
         section("Settings") {            
@@ -90,23 +89,21 @@ def motionHandler(evt) {
     	break
     case "inactive":
     	def secs = 60 * idleMinutes
-    	log.debug "motionHandler: motion detector inactive - scheduling a timer event for ${secs} secs"
+    	log.debug "motionHandler: motion detector inactive - scheduling timer event for ${secs} secs"
     	runIn(secs, timeoutHandler)
     	break
     default:
-    	log.error "motionHandler: bad event, value = ${evt.value}"
+    	log.error "motionHandler: bad event value ${evt.value}"
     }
 }
 
 def timeoutHandler() {
     def currentMode = location.mode
     if (enableModes.contains(currentMode)) {    
-    	log.debug "timeoutHandler: running action = ${runAction}"
+    	log.debug "timeoutHandler: running action ${runAction}"
         location.helloHome?.execute(runAction)
-        sendNotificationEvent("Looks like everybody left the room, so I ran: ${runAction}")
+        sendNotificationEvent("We're done with that. Everybody left the room, so I ran: ${runAction}")
     } else {
     	log.debug "timeoutHandler: ignoring event in mode ${currentMode}"
     }
 }
-    
-    
