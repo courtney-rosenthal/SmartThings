@@ -29,6 +29,10 @@
  * For more information, please refer to <http://unlicense.org/>
  */
  
+def lastUpdated() {
+	return "24-Nov-2015 23:28"
+}
+
 definition(
     name: "We're Done With That",
     namespace: "chip-rosenthal",
@@ -53,7 +57,7 @@ def dynamicPrefs() {
             log.error "dynamicPrefs: failed to retrieve available actions"
         }
         
-        section("Settings") {            
+        section("Settings") {
             input "enableModes", "mode", \
                 title: "When the house is in this mode:", required: true, multiple: true
             input "selectedSensor", "capability.motionSensor", \
@@ -62,6 +66,9 @@ def dynamicPrefs() {
                 title: "Has been idle for this long (mins):", required: true
             input "runAction", "enum", \
                 title: "Then run this action:", options: actions, required: true
+         }
+         section("App Info") {
+            paragraph "Last updated: ${lastUpdated()}"
         }
     }
 }
@@ -88,7 +95,7 @@ def motionHandler(evt) {
     	unschedule("timeoutHandler")
     	break
     case "inactive":
-    	def secs = 60 * idleMinutes
+    	def secs = /*60 **/ idleMinutes
     	log.debug "motionHandler: motion detector inactive - scheduling timer event for ${secs} secs"
     	runIn(secs, timeoutHandler)
     	break
@@ -100,10 +107,10 @@ def motionHandler(evt) {
 def timeoutHandler() {
     def currentMode = location.mode
     if (enableModes.contains(currentMode)) {    
-    	log.debug "timeoutHandler: running action ${runAction}"
+        log.debug "timeoutHandler: running action ${runAction}"
         location.helloHome?.execute(runAction)
         sendNotificationEvent("We're done with that. Everybody left the room, so I ran: ${runAction}")
     } else {
-    	log.debug "timeoutHandler: ignoring event in mode ${currentMode}"
+        log.debug "timeoutHandler: ignoring event in mode ${currentMode}"
     }
 }
