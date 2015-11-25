@@ -95,7 +95,7 @@ def motionHandler(evt) {
     	unschedule("timeoutHandler")
     	break
     case "inactive":
-    	def secs = /*60 **/ idleMinutes
+    	def secs = idleMinutes * 60
     	log.debug "motionHandler: motion detector inactive - scheduling timer event for ${secs} secs"
     	runIn(secs, timeoutHandler)
     	break
