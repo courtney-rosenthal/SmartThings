@@ -30,14 +30,14 @@
  */
  
 def lastUpdated() {
-	return "24-Nov-2015 23:28"
+	return "25-Nov-2015 10:07"
 }
 
 definition(
     name: "We're Done With That",
     namespace: "chip-rosenthal",
     author: "Chip Rosenthal",
-    description: "Use this app if you have a mode like \"Watching TV\" and you want to change it automatically when everybody leaves the room",
+    description: "Run an action when everybody leaves the room. I use this to automatically change mode when the house is in \"Watching TV\" mode and everybody leaves the living room.", 
     category: "Mode Magic",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
