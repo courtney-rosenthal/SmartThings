@@ -174,10 +174,24 @@ def getCurrentLevel(dimmer) {
  * Given a current dimmer level, calculate next value from the "myDimmerLevels" specification.
  */
 def calculateNewLevel(currentLevel) {
-    for (lvl in myDimmerLevels*.toInteger()) {
+
+	/*
+     * There is a bug where if I run this in the emulator, myDimmerLevels is an array
+     * but in the device it is a string.
+     */
+    def levels = [100]
+    if (myDimmerLevels instanceof List) {
+    	levels = myDimmerLevels*.toInteger()
+    } else if (myDimmerLevels instanceof String) {
+        levels = myDimmerLevels.split(",")*.toInteger()
+    } else {
+    	log.warn "calculateNewLevel: bad myDimmerLevels value ${myDimmerLevels.dump()}"
+    }
+    
+    for (lvl in levels) {
     	if (currentLevel < lvl) {
         	return lvl
         }
     }
-    return myDimmerLevels.first().toInteger()
+    return levels.first()
 }
