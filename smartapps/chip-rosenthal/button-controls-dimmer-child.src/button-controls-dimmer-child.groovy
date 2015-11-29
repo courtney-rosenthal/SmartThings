@@ -28,6 +28,7 @@
  *
  * For more information, please refer to <http://unlicense.org/>
  */
+ 
 definition(
     name: "Button Controls Dimmer Child",
     namespace: "chip-rosenthal",
@@ -41,31 +42,44 @@ definition(
 
 preferences {
     page(name: "page1", nextPage: "page2", uninstall: true) {
-        section("Button") {  
+        section("Assign this button") {  
             input "myButton", "capability.button", \
                 title: "Button device:", required: true 
             input "myButtonNumber", "enum", \
                 title: "Button number (for remote with multiple buttons):", options: ["1","2","3","4"], required: false
+            paragraph '''\
+If your device has a single button, leave the button number blank.
+
+For an \"Aeon Minimote\", select the button number (1-4) to assign.
+
+Other multi-button devices currently are untested.
+'''
         }
-        section("Dimmers") {
+        section("To control these dimmers") {
             input "myDimmers", "capability.switchLevel", \
                 title: "Dimmers:", multiple: true
-            input "myDimmerMinValue", "number", \
-                title: "Min level (0-100):", range: "0..100", required: true, defaultValue: 10
-            input "myDimmerMaxValue", "number", \
-                title: "Max level (0-100):", range: "0..100", required: true, defaultValue: 100
-            input "myDimmerSteps", "number", \
-                title: "Number steps (1 - 10):", range: "1..10", required: true, defaultValue: 2
+                
+            input "myDimmerLevels", "string", \
+            	title: "Dimmer step specification:", required: true, defaultValue: "10,60,100"
+                
+            paragraph '''\
+The \"Dimmer step specification\" is a list of dimmer values in ascending order, separated by commas.
+
+For example: 10,60,100
+
+Each press of the button advances the dimmer to the next in the list. When the end of the list is reached, the next button press returns the dimmer to the first value in the list.
+'''
         }
     }
     
-    page(name: "page2", install: true, uninstall: true)
+    page(name: "page2")
 }
+
 
 def page2() {
     def dfltLabel = (myButtonNumber ? "${myButton}, button ${myButtonNumber}" : myButton)
-    dynamicPage(name: "page2") {
-    	section("") {
+    dynamicPage(name: "page2", install: true, uninstall: true) {
+    	section() {
         	label title: "Assign a name", required: true, defaultValue: "$dfltLabel"
             mode title: "Set for specific mode(s)", required: false, multiple: true
         }
@@ -127,8 +141,9 @@ def buttonHandler(evt) {
         break
         
     case "pushed":
-        def newLevel = calculateNewLevel(myDimmers.first()?.currentValue("level") ?: 0)
-        log.debug "buttonHandler: setting dimmer level ${newLevel}, myDimmers = ${myDimmers}"
+    	def currentLevel = getCurrentLevel(myDimmers.first())
+        def newLevel = calculateNewLevel(currentLevel)
+        log.debug "buttonHandler: currentLevel = ${currentLevel}, newLevel = ${newLevel}, myDimmers = ${myDimmers}"
         myDimmers.each {d -> d.setLevel(newLevel)}
         break
         
@@ -141,29 +156,28 @@ def buttonHandler(evt) {
 }
 
 
+/**
+ * Given a dimmer device, return it's current level. Returns 0 for switch off or device doesn't exist.
+ */
+def getCurrentLevel(dimmer) {
+	if (! dimmer) {
+    	return 0
+    }
+    if (dimmer.currentValue("switch") == "off") {
+    	return 0
+    }
+    return dimmer.currentValue("level") ?: 0
+}
+
+
+/**
+ * Given a current dimmer level, calculate next value from the "myDimmerLevels" specification.
+ */
 def calculateNewLevel(currentLevel) {
-	if (! myDimmerMinValue) {
-    	myDimmerMinValue = 10
+    for (lvl in myDimmerLevels*.toInteger()) {
+    	if (currentLevel < lvl) {
+        	return lvl
+        }
     }
-    if (! myDimmerMaxValue) {
-    	myDimmerMaxValue = 100
-    }
-    if (! myDimmerSteps) {
-    	myDimmerSteps = 2
-    }
-    
-    def step = (myDimmerMaxValue - myDimmerMinValue) / myDimmerSteps
-    
-    def newLevel
-    if (currentLevel == 0) {
-    	newLevel = myDimmerMinValue
-    } else {
-        newLevel = currentLevel + step
-        if (newLevel > myDimmerMaxValue) {
-            newLevel = myDimmerMinValue
-        }	
-    }
-    
-    log.debug "calculateNewLevel: currentLevel = ${currentLevel}, step = ${step}, newLevel = ${newLevel}"
-    return newLevel
+    return myDimmerLevels.first().toInteger()
 }
