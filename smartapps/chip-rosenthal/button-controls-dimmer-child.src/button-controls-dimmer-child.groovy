@@ -80,8 +80,8 @@ def page2() {
     def dfltLabel = (myButtonNumber ? "${myButton}, button ${myButtonNumber}" : myButton)
     dynamicPage(name: "page2", install: true, uninstall: true) {
     	section() {
-        	label title: "Assign a name", required: true, defaultValue: "$dfltLabel"
-            mode title: "Set for specific mode(s)", required: false, multiple: true
+        	label title: "Assign a name", required: false, defaultValue: "$dfltLabel"
+            mode title: "Set for specific mode(s)"
         }
 	}
 }
