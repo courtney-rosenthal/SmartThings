@@ -28,10 +28,6 @@
  *
  * For more information, please refer to <http://unlicense.org/>
  */
- 
-def lastUpdated() {
-	return "25-Nov-2015 10:07"
-}
 
 definition(
     name: "We're Done With That",
@@ -41,8 +37,8 @@ definition(
     category: "Mode Magic",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png")
-
+    iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
+    lastUpdated: "2015-Nov-29 22:43")
 
 preferences {
     page(name: "dynamicPrefs")
@@ -68,7 +64,7 @@ def dynamicPrefs() {
                 title: "Then run this action:", options: actions, required: true
          }
          section("App Info") {
-            paragraph "Last updated: ${lastUpdated()}"
+            paragraph "Last updated: ${metadata.definition.lastUpdated}"
         }
     }
 }
