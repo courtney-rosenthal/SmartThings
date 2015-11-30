@@ -38,7 +38,8 @@ definition(
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
     iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    parent: "chip-rosenthal:Button Controls Dimmer")
+    parent: "chip-rosenthal:Button Controls Dimmer",
+    lastUpdated: "2015-Nov-29 22:43")
 
 preferences {
     page(name: "page1", nextPage: "page2", uninstall: true) {
@@ -82,6 +83,9 @@ def page2() {
     	section() {
         	label title: "Assign a name", required: false, defaultValue: "$dfltLabel"
             mode title: "Set for specific mode(s)"
+        }
+        section("App Info") {
+        	paragraph "Last updated: ${metadata.definition.lastUpdated}"
         }
 	}
 }
