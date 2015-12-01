@@ -150,7 +150,7 @@ def configure() {
     log.debug "Applying local customizations, last updated 25-Nov-2015 10:16"
     
     // 1: Motion Sensor's Sensitivity (8-255, default 10)
-	cmds << zwave.configurationV1.configurationSet(configurationValue: [8], parameterNumber: 1, size: 1).format()
+	cmds << zwave.configurationV1.configurationSet(configurationValue: [12], parameterNumber: 1, size: 1).format()
     
     // 2: Motion Sensor's Blind Time (0-15, default 15)
     //cmds << zwave.configurationV1.configurationSet(configurationValue: [9], parameterNumber: 2, size: 1).format() // 5 secs
