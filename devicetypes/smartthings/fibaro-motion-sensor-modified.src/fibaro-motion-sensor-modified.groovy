@@ -146,9 +146,7 @@ def configure() {
     cmds << response(zwave.firmwareUpdateMdV2.firmwareMdGet().format())
     
     /********** begin local customizations **********/
-    
-    log.debug "Applying local customizations, last updated 25-Nov-2015 10:16"
-    
+        
     // 1: Motion Sensor's Sensitivity (8-255, default 10)
 	cmds << zwave.configurationV1.configurationSet(configurationValue: [12], parameterNumber: 1, size: 1).format()
     
