@@ -38,7 +38,7 @@ definition(
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
     iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    lastUpdated: "2015-Nov-29 22:43")
+    lastUpdated: "2015-Dec-06 00:37")
 
 preferences {
     page(name: "page1", nextPage: "page2", uninstall: true) {
@@ -79,7 +79,7 @@ Each press of the button advances the dimmer to the next in the list. When the e
 def page2() {
     def dfltLabel = (myButtonNumber ? "${myButton}, button ${myButtonNumber}" : myButton)
     dynamicPage(name: "page2", install: true, uninstall: true) {
-    	section() {
+    	section([mobileOnly:true]) {
         	label title: "Assign a name", required: false, defaultValue: "$dfltLabel"
             mode title: "Set for specific mode(s)"
         }
