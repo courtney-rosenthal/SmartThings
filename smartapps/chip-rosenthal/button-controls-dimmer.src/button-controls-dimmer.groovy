@@ -1,5 +1,5 @@
 /**
- *  Button Controls Dimmer Child
+ * Button Controls Dimmer
  *
  * By Chip Rosenthal <chip@unicom.com>
  *  
@@ -30,15 +30,14 @@
  */
  
 definition(
-    name: "Button Controls Dimmer Child",
+    name: "Button Controls Dimmer",
     namespace: "chip-rosenthal",
     author: "Chip Rosenthal",
-    description: "DO NOT INSTALL THIS APP. Install the \"Button Controls Dimmer\" app instead.",
+    description: "Control a dimmer device with a button. Short push adjusts dimmer level. Long push turns off.",
     category: "My Apps",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
     iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    parent: "chip-rosenthal:Button Controls Dimmer",
     lastUpdated: "2015-Nov-29 22:43")
 
 preferences {
