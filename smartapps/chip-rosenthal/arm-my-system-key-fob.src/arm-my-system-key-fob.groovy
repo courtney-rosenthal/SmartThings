@@ -1,5 +1,5 @@
 /**
- *  Button Controls Dimmer
+ * Arm My System Key Fob
  *
  * By Chip Rosenthal <chip@unicom.com>
  *  
