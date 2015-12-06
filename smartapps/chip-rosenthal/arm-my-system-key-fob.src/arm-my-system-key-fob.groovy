@@ -37,7 +37,7 @@ definition(
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
     iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    lastUpdated: "2015-Dec-05 21:21")
+    lastUpdated: "2015-Dec-05 21:29")
 
 preferences {
     page(name: "page1")  
@@ -52,7 +52,7 @@ def page1() {
         log.error "dynamicPrefs: failed to retrieve available actions"
     }
 
-    dynamicPage(name: "page1", nextPage: "page2", uninstall: true) {
+    dynamicPage(name: "page1", uninstall: true, nextPage: "page2") {
         section("Select Key Fob Device") {  
             input "buttonDevice", "capability.button", \
             	title: "Select button device:", required: true 
@@ -93,8 +93,8 @@ def page1() {
 
 def page2() {
 	def defName = "Arm My System with ${buttonDevice}"
-    dynamicPage(name: "page2", install: true, uninstall: true) {
-    	section() {
+    dynamicPage(name: "page2", uninstall: true, install: true) {
+    	section([mobileOnly:true]) {
         	label title: "Assign a name", required: false, defaultValue: defName
             mode title: "Set for specific mode(s)"
         }
@@ -157,6 +157,14 @@ def buttonHandler(evt) {
 	if (feedbackSwitch) {
     	def currState = feedbackSwitch.currentValue("switch")
         log.debug "buttonHandler: feedbackSwitch = ${feedbackSwitch}, currState = ${currState}"
+        /*
+         * The timing on the light flash is a little dicey.
+         * Smartthings prohibits a sleep() call.
+         * The Smartthings scheduling has 1 second resolution, and 1 minute precision.
+         * I tested with a GE 12727 Z-Wave switch with the code below, and it provided noticable (acceptable) results.
+         * Let me know if you encounter a device that behaves otherwise.
+         * (Or, if you come up with a good solution for flashing a light.)
+         */
         switch (currState) {
             case "on":
             	feedbackSwitch.off()
