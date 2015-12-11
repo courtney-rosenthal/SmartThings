@@ -38,14 +38,15 @@ definition(
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
     iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    lastUpdated: "2015-Nov-29 22:43")
+    lastUpdated: "2015-Dec-10 22:31")
 
 preferences {
-    page(name: "dynamicPrefs")
+    page(name: "page1")  
+    page(name: "page2")  
 }
 
-def dynamicPrefs() {
-    dynamicPage(name: "dynamicPrefs", install: true, uninstall: true) {
+def page1() {
+    dynamicPage(name: "page1", uninstall: true, nextPage: "page2") {
     
     	// build sorted list of available actions
         def actions = location.helloHome?.getPhrases()*.label.sort()
@@ -53,7 +54,7 @@ def dynamicPrefs() {
             log.error "dynamicPrefs: failed to retrieve available actions"
         }
         
-        section("Settings") {
+        section() {
             input "enableModes", "mode", \
                 title: "When the house is in this mode:", required: true, multiple: true
             input "selectedSensor", "capability.motionSensor", \
@@ -63,11 +64,23 @@ def dynamicPrefs() {
             input "runAction", "enum", \
                 title: "Then run this action:", options: actions, required: true
          }
-         section("App Info") {
-            paragraph "Last updated: ${metadata.definition.lastUpdated}"
-        }
+ 
     }
 }
+
+def page2() {
+	def defName = "We're Done With ${enableModes}"
+    dynamicPage(name: "page2", uninstall: true, install: true) {
+    	section([mobileOnly:true]) {
+        	label title: "Assign a name", required: false, defaultValue: defName
+            mode title: "Set for specific mode(s)"
+        }
+        section("App Info") {
+        	paragraph "Last updated: ${metadata.definition.lastUpdated}"
+        }
+	}
+}
+
 
 def installed() {
 	log.debug "installed: settings = ${settings}"    
