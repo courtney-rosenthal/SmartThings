@@ -38,7 +38,7 @@ definition(
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
     iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    lastUpdated: "2015-Dec-06 00:37")
+    lastUpdated: "2016-Apr-17 15:33")
 
 preferences {
     page(name: "page1", nextPage: "page2", uninstall: true) {
@@ -177,6 +177,13 @@ def getCurrentLevel(dimmer) {
  * Given a current dimmer level, calculate next value from the "myDimmerLevels" specification.
  */
 def calculateNewLevel(currentLevel) {
+
+    /*
+     * I've got a bug where this app is setting my GE Link bulbs at 60 but they read
+     * back as 59. This means they always get set to 60 and never change.
+     * This tweak ensures it will go on to the next step.
+     */
+     currentLevel += 5;
 
 	/*
      * There is a bug where if I run this in the emulator, myDimmerLevels is an array
