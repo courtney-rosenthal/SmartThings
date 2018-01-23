@@ -1,5 +1,7 @@
 # SmartThings
 
+**I am no longer using SmartThings due to its poor reliability and bad design for anything but the simplest automations. I'm keeping this code up, but I do not recommend using the SmartThings system.**
+
 This repo contains my custom development for the SmartThings environment.
 
 As this time, the _smartapps_ directory contains original apps I've written. The _devicetypes_ directory contains existing devices I've tweaked for local preferences.
